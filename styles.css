@@ -1,0 +1,126 @@
+            *{
+                margin: 0;
+                padding: 0;
+            }
+
+            body{
+                font-family: "Segoe UI";
+                background-color: #FCFCFC;
+            }
+
+            header{
+                color: White;
+                font-weight: bold;
+                font-size: x-large;
+                padding: 3%;
+                background-color: #360185;
+            }
+
+            h1 {
+                color: #360185;
+                text-align: center;
+                font-size: 4rem;
+                padding-top: 3%;
+            }
+
+            #nav{
+                text-align: center;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;            
+            }
+
+            .nav-button{
+                font-size: 1.8rem;
+                color: white;
+                
+                border: none;
+                border-radius: 0.2rem;
+                padding: 1% 10%;
+                margin: 2% 0.5%;
+                box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+                background-color: #8F0177;
+                cursor: pointer;
+            }
+
+            #upload{
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .upload-button{
+                font-size: 1rem;
+                color: white;
+                                
+                border: none;
+                border-radius: 0.2rem;
+                padding: 0.5% 21%;
+                margin: 0.6% 0.5%;
+                box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+                background-color: #DE1A58;
+                cursor: pointer;
+            }
+
+            #input{
+                text-align: center;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+
+                margin-top: 1%;
+            }
+
+            #lsb-slider{
+                text-align: center;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
+                margin-right: 2rem;
+            }
+
+            #lsb-slider p{
+                color:#360185;
+                font-weight: bold;
+            }
+
+            .input-slider{
+                accent-color: #F4B342;
+                height: 1rem;
+                width: 15rem;
+                border-radius: 0.8rem;
+                outline: none;
+            }
+
+            .input-text{
+                border-color: #360185;
+                width: 17%;
+                height: 2rem;
+                border-radius: 1rem;
+                padding: 0 1%;
+                outline: none;
+            }
+
+            #submit{
+                text-align: center;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            #submit button{
+                font-size: 1rem;
+                color: white;
+                                
+                border: none;
+                border-radius: 0.2rem;
+                padding: 0.5% 3%;
+                margin: 1.4% 24%;
+                box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+                background-color: #F4B342;
+                cursor: pointer;
+            }
