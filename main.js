@@ -33,7 +33,11 @@ document.getElementById('upload-cover').addEventListener('change', function(e) {
         height: canvas.height
       });
 
-      encoder.encode();
+      encoder.encode({
+        data: pixels,
+        width: canvas.width,
+        height: canvas.height
+      }, "1234");
     }
 
 
