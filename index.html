@@ -20,7 +20,8 @@
         </div>
 
         <div id="upload">
-            <input type="file" class="upload-button" accept="image/*">
+            <input type="file" id="upload-cover" class="upload-button" accept="image/png">
+            <input type="file" id="upload-secret" class="upload-button" accept="image/png">
             <button class="upload-button">Upload Cover Image</button>
             <button class="upload-button">Upload Secret Image</button>
         </div>
@@ -39,8 +40,10 @@
             <button>Encode</button>
         </div>
 
-        <script type="text/python">
+        <script type="module" src="main.js"></script>
+        <script type="module" src="encode.js"></script>
+        <script type="module" src="generatePositions.js"></script>
 
-        </script>
+        <script src="isaacCSPRNG-1.1.js"></script>
     </body>
 </html>
