@@ -19,11 +19,20 @@
             <button class="nav-button">Decode</button>
         </div>
 
-        <div id="upload">
-            <input type="file" id="upload-cover" class="upload-button" accept="image/png">
-            <input type="file" id="upload-secret" class="upload-button" accept="image/png">
-            <button class="upload-button">Upload Cover Image</button>
-            <button class="upload-button">Upload Secret Image</button>
+        <div class="upload-container">
+            <input type="file" id="upload-cover" accept="image/png" hidden>
+            <label for="upload-cover" class="upload-button">Upload Cover Image</label>
+            <div class="image-scroll">
+                <img class="upload-placeholder"></img>
+            </div>
+        </div>
+        
+        <div class="upload-container">
+            <input type="file" id="upload-secret" accept="image/png" hidden>
+            <label for="upload-secret" class="upload-button">Upload Secret Image</label>
+            <div class="image-scroll">
+                <img class="upload-placeholder"></img>
+            </div>        
         </div>
 
         <div id="input">
@@ -37,8 +46,9 @@
         </div>
 
         <div id="submit">
-            <button>Encode</button>
+            <button id="submit-button" class="empty" disabled>Encode</button>
         </div>
+
 
         <canvas id="myCanvas"></canvas>
 

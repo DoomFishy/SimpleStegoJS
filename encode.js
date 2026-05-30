@@ -7,13 +7,14 @@ export class StegoEncoder {
         this.secret_data;
 
         this.password;
-        this.lsb_bits = 7; 
+        this.lsb_bits = 1; 
 
         this.header_positions;
         this.data_positions;
     }
 
-    encode(password){
+    encode(password, lsb){
+        this.lsb_bits = lsb;
         let generator = new GeneratePositions(this.cover_data.width, this.cover_data.height, password);
         this.positions = generator.getScrambledPositions();
 
