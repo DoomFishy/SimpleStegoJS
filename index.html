@@ -15,40 +15,63 @@
         <h1>Simple Steganography</h1>
 
         <div id="nav">
-            <button class="nav-button">Encode</button>
-            <button class="nav-button">Decode</button>
+            <button class="nav-button" id="nav-encode">Encode</button>
+            <button class="nav-button" id="nav-decode">Decode</button>
         </div>
 
-        <div class="upload-container">
-            <input type="file" id="upload-cover" accept="image/png" hidden>
-            <label for="upload-cover" class="upload-button">Upload Cover Image</label>
-            <div class="image-scroll">
-                <img class="upload-placeholder"></img>
+        <div id="inputs">
+            <div id="encode" class="page" hidden>
+                <div class="upload-container">
+                    <input type="file" id="upload-cover" accept="image/png" hidden>
+                    <label for="upload-cover" class="upload-button">Upload Cover Image</label>
+                    <div class="image-scroll">
+                        <img class="upload-placeholder"></img>
+                    </div>
+                </div>
+                
+                <div class="upload-container">
+                    <input type="file" id="upload-secret" accept="image/png" hidden>
+                    <label for="upload-secret" class="upload-button">Upload Secret Image</label>
+                    <div class="image-scroll">
+                        <img class="upload-placeholder"></img>
+                    </div>        
+                </div>
+
+                <div id="lsb-slider">
+                    <p>Least Significant Bits: </p>
+                    <input class="input-slider" type="range">
+                    <p>1</p>
+
+                    <input class="input-text" placeholder="Enter Password" type="text" min="1" max="8" value="1">
+                </div>
+
+                <div id="submit">
+                    <button class="submit-button empty" disabled>Encode</button>
+                </div>
+            </div>
+
+            <div id="decode" class="page">
+                <div class="upload-container">
+                    <input type="file" id="upload-stego" accept="image/png" hidden>
+                    <label for="upload-stego" class="upload-button">Upload Stego Image</label>
+                    <div class="image-scroll">
+                        <img class="upload-placeholder"></img>
+                    </div>
+                </div>
+
+                <div id="lsb-slider">
+                    <p>Least Significant Bits: </p>
+                    <input class="input-slider" type="range">
+                    <p>1</p>
+
+                    <input class="input-text" placeholder="Enter Password" type="text" min="1" max="8" value="1">
+                </div>
+
+                <div id="submit">
+                    <button class="submit-button empty" disabled>Decode</button>
+                </div>
             </div>
         </div>
-        
-        <div class="upload-container">
-            <input type="file" id="upload-secret" accept="image/png" hidden>
-            <label for="upload-secret" class="upload-button">Upload Secret Image</label>
-            <div class="image-scroll">
-                <img class="upload-placeholder"></img>
-            </div>        
-        </div>
-
-        <div id="input">
-            <div id="lsb-slider">
-                <p>Least Significant Bits: </p>
-                <input class="input-slider" type="range">
-                <p>1</p>
-            </div>
-
-            <input class="input-text" placeholder="Enter Password" type="text" min="1" max="8" value="1">
-        </div>
-
-        <div id="submit">
-            <button id="submit-button" class="empty" disabled>Encode</button>
-        </div>
-
 
         <canvas id="myCanvas"></canvas>
 

@@ -136,7 +136,14 @@ export class StegoEncoder {
  
     }
 
-    setPassword(password){
-        this.password = password;
+    reset(){
+        this.cover_data = null;
+        this.secret_data = null;
+
+        this.password = null;
+        this.lsb_bits = 1; 
+
+        this.header_positions = null;
+        this.data_positions = null;
     }
 }

@@ -2,124 +2,172 @@ import { StegoEncoder } from "./encode.js";
 
 let encoder = new StegoEncoder();
 
+let page = document.getElementsByClassName("page");
+
 let image_placeholder = document.getElementsByClassName("upload-placeholder");
 let image_scroll = document.getElementsByClassName("image-scroll");
 
 let password_input = document.getElementsByClassName("input-text");
 let lsb_input = document.getElementsByClassName("input-slider");
 
-let encode_button = document.getElementById("submit-button");
+let submit_button = document.getElementsByClassName("submit-button");
 
-document.getElementById("upload-cover").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-    
-  if (file && file.type.startsWith("image/")) {
-    const img = new Image();
+function updateImagePlaceholder(file, img, index) {
+    image_placeholder[index].src = URL.createObjectURL(file);
+    image_placeholder[index].width = img.width;
+    image_placeholder[index].height = img.height;
+    image_placeholder[index].classList.add("show");
+    image_scroll[index].classList.add("show");
+}
 
-    img.onload = function(){
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+function processImage(img, encoder, type) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const pixels = imageData.data; // extract pixels
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data; // extract pixels
 
+    switch (type) {
+        case "cover":
+            encoder.setCoverImage({
+                data: pixels,
+                width: canvas.width,
+                height: canvas.height
+            });
+        case "secret":
+            encoder.setSecretImage({
+                data: pixels,
+                width: canvas.width,
+                height: canvas.height
+            });
+        case "stego":
+            return
+    }
+}
 
+function enableButton() {
+    if (page[0].hidden == false) {
+        let counter = 0;
+        for (let i = 0; i < 2; i++) {
+            if (image_placeholder[i].getAttribute("src") != "") {
+                counter++;
+            }
+        }
 
-      /*
-      for (let i = 0; i < pixels.length; i+= 4){
-        pixels[i] = (pixels[i] & 0xFE) | 1; // Red
-        pixels[i+1] = (pixels[i+1] & 0xFE) | 1; // Green
-        pixels[i+2] = (pixels[i+2] & 0xFE) | 1; // Blue
-      }
-      */
-
-      encoder.setCoverImage({
-        data: pixels,
-        width: canvas.width,
-        height: canvas.height
-      });
+        if (counter == 2) {
+            submit_button[0].disabled = false;
+            submit_button[0].classList.remove("empty");
+        }
     }
 
-    img.src = URL.createObjectURL(file);
-  
-    image_placeholder[0].src = URL.createObjectURL(file);
-    image_placeholder[0].width = img.width;
-    image_placeholder[0].height = img.height;
-    image_placeholder[0].classList.add("show");
-    image_scroll[0].classList.add("show");
-
-    if (image_placeholder[0].getAttribute("src") != null && image_placeholder[1].getAttribute("src")){
-      encode_button.disabled = false;
-      encode_button.classList.remove("empty");
+    else {
+        if (image_placeholder[2].getAttribute("src") != null) {
+            submit_button[1].disabled = false;
+            submit_button[1].classList.remove("empty");
+        }
     }
-  };
+}
+
+function resetPlaceholders(){
+    for (let i = 0; i < image_placeholder.length; i++) {
+        image_placeholder[i].src = "";
+        image_placeholder[i].classList.remove("show");
+        image_scroll[i].classList.remove("show");
+    }
+
+    for (let i = 0; i < submit_button.length; i++) {
+        submit_button[i].disabled = false;
+        submit_button[i].classList.add("empty");    
+    }
+
+}
+
+document.getElementById("nav-encode").onclick = () => {
+    page[0].hidden = false;
+    page[1].hidden = true;
+
+    encoder.reset();
+    resetPlaceholders();
+
+}
+
+document.getElementById("nav-decode").onclick = () => {
+    page[0].hidden = true;
+    page[1].hidden = false;
+
+    encoder.reset();
+    resetPlaceholders();
+}
+
+document.getElementById("upload-cover").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+
+    if (file && file.type.startsWith("image/")) {
+        const img = new Image();
+
+        img.onload = function(){
+            processImage(img, encoder, "cover")
+            updateImagePlaceholder(file, img, 0);
+            enableButton();            
+        }
+
+        img.src = URL.createObjectURL(file);
+
+    };
 });
 
+document.getElementById("upload-secret").addEventListener("change", function (e) {
+    const file = e.target.files[0];
 
-document.getElementById("upload-secret").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-    
-  if (file && file.type.startsWith("image/")) {
-    const img = new Image();
+    if (file && file.type.startsWith("image/")) {
+        const img = new Image();
 
-    img.onload = function(){
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+        img.onload = function(){
+            processImage(img, encoder, "secret")
+            updateImagePlaceholder(file, img, 1);
+            enableButton();            
+        }
 
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+        img.src = URL.createObjectURL(file);
 
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const pixels = imageData.data; // extract pixels
 
-      /*
-      for (let i = 0; i < pixels.length; i+= 4){
-        pixels[i] = (pixels[i] & 0xFE) | 1; // Red
-        pixels[i+1] = (pixels[i+1] & 0xFE) | 1; // Green
-        pixels[i+2] = (pixels[i+2] & 0xFE) | 1; // Blue
-      }
-      */
-
-      encoder.setSecretImage({
-        data: pixels,
-        width: canvas.width,
-        height: canvas.height
-      });
-    }
-
-    img.src = URL.createObjectURL(file);
-
-    image_placeholder[1].src = URL.createObjectURL(file);
-    image_placeholder[1].width = img.width;
-    image_placeholder[1].height = img.height;
-    image_placeholder[1].classList.add("show");
-    image_scroll[1].classList.add("show");
-
-    if (image_placeholder[0].getAttribute("src") != null && image_placeholder[1].getAttribute("src")){
-      encode_button.disabled = false;
-      encode_button.classList.remove("empty");
-    }
-  };
+    };
 });
 
-document.getElementById("submit").onclick = () =>{
-  const image = encoder.encode(password_input.value, lsb_input.value);
+document.getElementById("upload-stego").addEventListener("change", function (e) {
+    const file = e.target.files[0];
 
-  const canvas = document.getElementById("myCanvas");
-  canvas.width = image.width;
-  canvas.height = image.height;
-  
-  // Create ImageData object
-  const imageData = new ImageData(image.data, image.width, image.height);
-  
-  // Draw to canvas
-  const ctx = canvas.getContext("2d");
-  ctx.putImageData(imageData, 0, 0);
+    if (file && file.type.startsWith("image/")) {
+        const img = new Image();
+
+        img.onload = function(){
+            processImage(img, encoder, "stego")
+            updateImagePlaceholder(file, img, 2);
+            enableButton();            
+        }
+
+        img.src = URL.createObjectURL(file);
+
+    };
+});
+
+document.getElementById("submit").onclick = () => {
+    const image = encoder.encode(password_input.value, lsb_input.value);
+
+    const canvas = document.getElementById("myCanvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    // Create ImageData object
+    const imageData = new ImageData(image.data, image.width, image.height);
+
+    // Draw to canvas
+    const ctx = canvas.getContext("2d");
+    ctx.putImageData(imageData, 0, 0);
 }
 
 
