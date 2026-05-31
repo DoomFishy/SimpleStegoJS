@@ -81,12 +81,19 @@ h1 {
 
 .image-scroll.show{
     display: block;
-    overflow: scroll;
-    width: 52vw;
+    overflow-y: auto;
+    width: 50vw;
     height: 25vh;
 
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
 }
+
+.image-scroll.show img{
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
 
 .upload-placeholder{
     display: none;
@@ -159,7 +166,7 @@ h1 {
     pointer-events: auto;
 }
 
-#submit button.empty.submit-button{
+#submit button.empty{
     color: white;
     background-color: rgba(196, 143, 52, 0.808);
     pointer-events: none;

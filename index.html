@@ -39,14 +39,14 @@
 
                 <div id="lsb-slider">
                     <p>Least Significant Bits: </p>
-                    <input class="input-slider" type="range">
+                    <input class="input-slider" type="range" min="1" max="8" value="1">
                     <p>1</p>
 
-                    <input class="input-text" placeholder="Enter Password" type="text" min="1" max="8" value="1">
+                    <input class="input-text" placeholder="Enter Password" type="text">
                 </div>
 
                 <div id="submit">
-                    <button class="submit-button empty" disabled>Encode</button>
+                    <button id="encode-button" class="submit-button empty" disabled>Encode</button>
                 </div>
             </div>
 
@@ -68,7 +68,7 @@
                 </div>
 
                 <div id="submit">
-                    <button class="submit-button empty" disabled>Decode</button>
+                    <button id="decode-button" class="submit-button empty" disabled>Decode</button>
                 </div>
             </div>
         </div>
@@ -77,6 +77,7 @@
 
         <script type="module" src="main.js"></script>
         <script type="module" src="encode.js"></script>
+        <script type="module" src="decode.js"></script>
         <script type="module" src="generatePositions.js"></script>
 
         <script src="isaacCSPRNG-1.1.js"></script>

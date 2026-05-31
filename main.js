@@ -1,6 +1,8 @@
+import { StegoDecoder } from "./decode.js";
 import { StegoEncoder } from "./encode.js";
 
 let encoder = new StegoEncoder();
+let decoder = new StegoDecoder();
 
 let page = document.getElementsByClassName("page");
 
@@ -45,7 +47,11 @@ function processImage(img, encoder, type) {
                 height: canvas.height
             });
         case "stego":
-            return
+            decoder.setStegoImage({
+                data: pixels,
+                width: canvas.width,
+                height: canvas.height
+            });
     }
 }
 
@@ -84,6 +90,7 @@ function resetPlaceholders(){
         submit_button[i].classList.add("empty");    
     }
 
+    password_input.value = "";
 }
 
 document.getElementById("nav-encode").onclick = () => {
@@ -92,7 +99,6 @@ document.getElementById("nav-encode").onclick = () => {
 
     encoder.reset();
     resetPlaceholders();
-
 }
 
 document.getElementById("nav-decode").onclick = () => {
@@ -155,17 +161,29 @@ document.getElementById("upload-stego").addEventListener("change", function (e) 
     };
 });
 
-document.getElementById("submit").onclick = () => {
-    const image = encoder.encode(password_input.value, lsb_input.value);
+document.getElementById("encode-button").onclick = () => {
+    const image = encoder.encode(password_input.value, 1);
 
     const canvas = document.getElementById("myCanvas");
     canvas.width = image.width;
     canvas.height = image.height;
 
-    // Create ImageData object
     const imageData = new ImageData(image.data, image.width, image.height);
 
-    // Draw to canvas
+    const ctx = canvas.getContext("2d");
+    ctx.putImageData(imageData, 0, 0);
+}
+
+
+document.getElementById("decode-button").onclick = () => {
+    const image = decoder.decode(password_input.value, 1);
+
+    const canvas = document.getElementById("myCanvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    const imageData = new ImageData(image.data, image.width, image.height);
+
     const ctx = canvas.getContext("2d");
     ctx.putImageData(imageData, 0, 0);
 }
