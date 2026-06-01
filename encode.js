@@ -15,6 +15,8 @@ export class StegoEncoder {
 
     encode(password, lsb){
         this.lsb_bits = lsb;
+        this.password = password;
+
         let generator = new GeneratePositions(this.cover_data.width, this.cover_data.height, password);
         this.positions = generator.getScrambledPositions();
 
@@ -74,6 +76,11 @@ export class StegoEncoder {
 
                         let new_pixel = {r: r, g: g, b: b};
                         target.data = this.setPixel(x, y, target.data, new_pixel, target.width);
+
+                        if (index == 1){
+                            console.log(new_pixel + " | " + this.lsb_bits + " | " + this.password);
+                        }
+
                         index++;
                     }
                 }

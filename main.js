@@ -9,7 +9,6 @@ let page = document.getElementsByClassName("page");
 let image_placeholder = document.getElementsByClassName("upload-placeholder");
 let image_scroll = document.getElementsByClassName("image-scroll");
 
-let password_input = document.getElementsByClassName("input-text");
 let lsb_input = document.getElementsByClassName("input-slider");
 
 let submit_button = document.getElementsByClassName("submit-button");
@@ -79,6 +78,9 @@ function enableButton() {
 }
 
 function resetPlaceholders(){
+    let encode_password = document.getElementById("encode-password");
+    let decode_password = document.getElementById("decode-password");
+
     for (let i = 0; i < image_placeholder.length; i++) {
         image_placeholder[i].src = "";
         image_placeholder[i].classList.remove("show");
@@ -90,7 +92,9 @@ function resetPlaceholders(){
         submit_button[i].classList.add("empty");    
     }
 
-    password_input.value = "";
+    encode_password.value = "";
+    decode_password.value = "";
+
 }
 
 document.getElementById("nav-encode").onclick = () => {
@@ -162,6 +166,9 @@ document.getElementById("upload-stego").addEventListener("change", function (e) 
 });
 
 document.getElementById("encode-button").onclick = () => {
+    let password_input = document.getElementById("encode-password");
+    console.log(password_input.value);
+    
     const image = encoder.encode(password_input.value, 1);
 
     const canvas = document.getElementById("myCanvas");
@@ -176,6 +183,8 @@ document.getElementById("encode-button").onclick = () => {
 
 
 document.getElementById("decode-button").onclick = () => {
+    let password_input = document.getElementById("decode-password");
+    console.log(password_input.value);
     const image = decoder.decode(password_input.value, 1);
 
     const canvas = document.getElementById("myCanvas");
