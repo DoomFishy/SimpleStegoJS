@@ -15,6 +15,8 @@ const encode_page = document.getElementById("encode");
 const decode_page = document.getElementById("decode");
 const preview_image = document.getElementById("final-image");
 
+let lsb = 0;
+
 function updateImagePlaceholder(file, img, index) {
     image_placeholder[index].src = URL.createObjectURL(file);
     image_placeholder[index].width = img.width;
@@ -121,6 +123,7 @@ document.querySelectorAll(".input-slider").forEach(slider => {
     const label = slider.nextElementSibling;
     slider.addEventListener("input", function() {
         label.textContent = this.value;
+        lsb = this.value;
     });
 });
 
@@ -179,12 +182,13 @@ document.getElementById("upload-stego").addEventListener("change", function (e) 
 document.getElementById("encode-button").onclick = () => {
     let password_input = document.getElementById("encode-password");
     console.log(password_input.value);
-    const image = encoder.encode(password_input.value, 1);
 
     encode_page.hidden = true;
     preview_image.classList.remove("hide");
 
-    const canvas = document.getElementById("myCanvas");
+    const image = encoder.encode(password_input.value, lsb);
+
+    const canvas = document.getElementById("final-image");
     canvas.width = image.width;
     canvas.height = image.height;
 
@@ -202,7 +206,7 @@ document.getElementById("decode-button").onclick = () => {
     decode_page.hidden = true;
     preview_image.classList.remove("hide");
     
-    const image = decoder.decode(password_input.value, 1);
+    const image = decoder.decode(password_input.value, lsb);
 
     const canvas = document.getElementById("final-image");
     canvas.width = image.width;

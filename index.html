@@ -14,13 +14,13 @@
         
         <h1>Simple Steganography</h1>
 
-        <div id="nav">
+        <nav id="nav">
             <button class="nav-button" id="nav-encode">Encode</button>
             <button class="nav-button" id="nav-decode">Decode</button>
-        </div>
+        </nav>
 
-        <div id="inputs">
-            <div id="encode" class="page">
+        <main id="inputs">
+            <section id="encode" class="page">
                 <div class="upload-container">
                     <input type="file" id="upload-cover" accept="image/png" hidden>
                     <label for="upload-cover" class="upload-button">Upload Cover Image</label>
@@ -37,20 +37,20 @@
                     </div>        
                 </div>
 
-                <div id="lsb-slider">
+                <div class="lsb-slider">
                     <p>Least Significant Bits: </p>
                     <input class="input-slider" type="range" min="1" max="8" value="1">
                     <p class="input-label">1</p>
 
-                    <input id="encode-password" placeholder="Enter Password" type="text">
+                    <input id="encode-password" class="input-text" placeholder="Enter Password" type="text">
                 </div>
 
                 <div id="submit">
                     <button id="encode-button" class="submit-button empty" disabled>Encode</button>
                 </div>
-            </div>
+            </section>
 
-            <div id="decode" class="page" hidden>
+            <section id="decode" class="page" hidden>
                 <div class="upload-container">
                     <input type="file" id="upload-stego" accept="image/png" hidden>
                     <label for="upload-stego" class="upload-button">Upload Stego Image</label>
@@ -59,24 +59,60 @@
                     </div>
                 </div>
 
-                <div id="lsb-slider">
+                <div class="lsb-slider">
                     <p>Least Significant Bits: </p>
                     <input class="input-slider" type="range" min="1" max="8" value="1">
                     <p class="input-label">1</p>
 
-                    <input id="decode-password" placeholder="Enter Password" type="text">
+                    <input id="decode-password" class="input-text" placeholder="Enter Password" type="text">
                 </div>
 
                 <div id="submit">
                     <button id="decode-button" class="submit-button empty" disabled>Decode</button>
                 </div>
-            </div>
+            </section>
 
-            <div id="preview" class="page" hidden>
+            <section id="preview" class="page" hidden>
                 <canvas id="final-image"></canvas>
-            </div>
-        </div>
+            </section>
+        </main>
 
+        <hr>
+
+        <section id="description">
+
+            <section id="introduction">
+                <p>This is a fun summer project of a concept that I learned in one of my courses</p>
+                <p>I decided to challenge myself, learn new things, and build something cool</p>
+            </section>
+
+
+            <section id="explanation">
+                <h2>How it works!</h2>
+                <div class="image-intro-diagram">
+                    <p>The Cover Image hides the Secret Image within itself</p> <img class="image-diagram" src="assets/diagram_1.png">
+                </div>
+                <div class="image-intro-diagram">
+                    <p>The Secret Image contains the you want to hide</p> <img class="image-diagram" src="assets/diagram_5.png">                    
+                </div>
+
+                <div class="image-lsb-diagram">
+                    <p>The Least Significant Bits (LSB) are the last bits in each RGB channel of the cover image modifying them causes the smallest change in colour</p>
+                    <img class="lsb-diagram" src="assets/diagram_2.png">
+                </div>
+                <div class="image-lsb-diagram">
+                    <p>The Most Siginificant Bits (MSB) are the start bits in each RGB channel of the cover image modifying them causes a significant change in colour</p>
+                    <img class="lsb-diagram" src="assets/diagram_3.png">
+                </div>
+
+                <p>Using this principle, we take the MSB of the Secret Image into the LSB of the Cover Image</p>
+                <p>The end result is a Stego Image that is perceptually indistinguishable from the Cover Image</p>
+                <img class="hiding-diagram" src="assets/diagram_4.png">
+            </section>
+
+        </section>
+
+        <footer></footer>
         
         <script type="module" src="main.js"></script>
         <script type="module" src="encode.js"></script>
@@ -84,5 +120,6 @@
         <script type="module" src="generatePositions.js"></script>
 
         <script src="isaacCSPRNG-1.1.js"></script>
+        
     </body>
 </html>
