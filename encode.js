@@ -24,8 +24,14 @@ export class StegoEncoder {
         this.header_positions = this.positions.slice(0, 64);
         this.data_positions = this.positions.slice(64, this.positions.length);
 
+        let image = {
+            data: new Uint8ClampedArray(this.cover_data.data),
+            width: this.cover_data.width,
+            height: this.cover_data.height
+        };
 
-        let image = this.hideHeader(this.cover_data, this.secret_data.width, this.header_positions, 0);
+
+        image = this.hideHeader(image, this.secret_data.width, this.header_positions, 0);
         image = this.hideHeader(image, this.secret_data.height, this.header_positions, 32);
 
         image = this.hideData(image, this.secret_data, this.data_positions);
@@ -33,13 +39,12 @@ export class StegoEncoder {
     }
 
     hideHeader(target, dimension, header_positions, offset){
-        let embeded_data = new Uint8ClampedArray(target.width * target.height * 4);
 
         for (let i = 0; i < 32; i++){
             let index = i + offset;
             let x = header_positions[index].x;
             let y = header_positions[index].y;
-
+            
             let target_pixel = this.getPixel(x, y, target.data, target.width);
 
             let shift = (32 - 1 - i) * this.lsb_bits * 3;
@@ -54,14 +59,12 @@ export class StegoEncoder {
 
             let new_pixel = {r: new_r, g: new_g, b: new_b};
 
-            embeded_data = this.setPixel(x, y, embeded_data, new_pixel, target.width);
+            target.data = this.setPixel(x, y, target.data, new_pixel, target.width);
         }
-        return embeded_data;
+        return target;
     }
 
     hideData(target, source, data_positions){
-        let embeded_data = new Uint8ClampedArray(target.width * target.height * 4);
-
         let index = 0;
 
         for (let i = 0; i < target.height; i++){
@@ -80,18 +83,18 @@ export class StegoEncoder {
                         let b = this.hideBits(target_pixel.b, source_pixel.b, this.lsb_bits);
 
                         let new_pixel = {r: r, g: g, b: b};
-                        embeded_data = this.setPixel(x, y, embeded_data, new_pixel, target.width);
+                        target.data = this.setPixel(x, y, target.data, new_pixel, target.width);
 
                         index++;
                     }
                 }
                 else {
-                    return embeded_data;
+                    return target;
                 }
             }
         }
 
-        return embeded_data;
+        return target;
     }
 
     hideBits(target, source, lsb){
@@ -132,10 +135,12 @@ export class StegoEncoder {
     }
 
     setCoverImage(image_data){
+        console.log(image_data);
         this.cover_data = image_data;
     }
 
     setSecretImage(image_data){
+        console.log(image_data);
         this.secret_data = image_data;
  
     }
