@@ -19,12 +19,18 @@ export class GeneratePositions {
         }
     }
 
+    randomizeSize(max, password){
+        const rng = isaacCSPRNG(password);
+        const size = rng.range(0, max);
+
+        return size;
+    }
+
     scramblePositions(password){
         const rng = isaacCSPRNG(password);
         const max = this.all_positions.length;
 
-
-        this.scrambled_positions = this.all_positions;
+        this.scrambled_positions = this.all_positions.slice();
 
         for (let i = max - 1; i > 0; i--){
             const j = rng.range(0, i)
@@ -38,4 +44,5 @@ export class GeneratePositions {
     getScrambledPositions(){
         return this.scrambled_positions
     }
+
 }

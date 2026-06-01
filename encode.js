@@ -14,6 +14,9 @@ export class StegoEncoder {
     }
 
     encode(password, lsb){
+        console.log("Secret Size: " + this.secret_data.width + " | " + this.secret_data.height);
+        console.log("Cover Size: " + this.cover_data.width + " | " + this.cover_data.height);
+
         this.lsb_bits = lsb;
         this.password = password;
 
@@ -24,19 +27,20 @@ export class StegoEncoder {
         this.data_positions = this.positions.slice(64, this.positions.length);
 
 
-        let image = this.hideHeader(this.cover_data, this.cover_data.width, this.header_positions);
-        image = this.hideHeader(this.cover_data, this.cover_data.height, this.header_positions);
+        let image = this.hideHeader(this.cover_data, this.secret_data.width, this.header_positions, 0);
+        image = this.hideHeader(image, this.secret_data.height, this.header_positions, 32);
 
-        image = this.hideData(this.cover_data, this.secret_data, this.data_positions);
+        image = this.hideData(image, this.secret_data, this.data_positions);
         return image;
     }
 
-    hideHeader(target, dimension, header_positions){
+    hideHeader(target, dimension, header_positions, offset){
         let size = header_positions.length / 2;
 
         for (let i = 0; i < size; i++){
-            let x = header_positions[i].x
-            let y = header_positions[i].y
+            let index = i + offset;
+            let x = header_positions[index].x;
+            let y = header_positions[index].y;
 
             let target_pixel = this.getPixel(x, y, target.data, target.width);
 
@@ -54,6 +58,7 @@ export class StegoEncoder {
 
             target.data = this.setPixel(x, y, target.data, new_pixel, target.width);
         }
+        return target;
     }
 
     hideData(target, source, data_positions){
@@ -76,10 +81,6 @@ export class StegoEncoder {
 
                         let new_pixel = {r: r, g: g, b: b};
                         target.data = this.setPixel(x, y, target.data, new_pixel, target.width);
-
-                        if (index == 1){
-                            console.log(new_pixel + " | " + this.lsb_bits + " | " + this.password);
-                        }
 
                         index++;
                     }

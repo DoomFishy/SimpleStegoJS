@@ -1,17 +1,19 @@
 import { StegoDecoder } from "./decode.js";
 import { StegoEncoder } from "./encode.js";
 
-let encoder = new StegoEncoder();
-let decoder = new StegoDecoder();
+const encoder = new StegoEncoder();
+const decoder = new StegoDecoder();
 
 let page = document.getElementsByClassName("page");
 
 let image_placeholder = document.getElementsByClassName("upload-placeholder");
 let image_scroll = document.getElementsByClassName("image-scroll");
 
-let lsb_input = document.getElementsByClassName("input-slider");
+const submit_button = document.getElementsByClassName("submit-button");
 
-let submit_button = document.getElementsByClassName("submit-button");
+const encode_page = document.getElementById("encode");
+const decode_page = document.getElementById("decode");
+const preview_image = document.getElementById("final-image");
 
 function updateImagePlaceholder(file, img, index) {
     image_placeholder[index].src = URL.createObjectURL(file);
@@ -55,7 +57,7 @@ function processImage(img, encoder, type) {
 }
 
 function enableButton() {
-    if (page[0].hidden == false) {
+    if (encode_page.hidden == false) {
         let counter = 0;
         for (let i = 0; i < 2; i++) {
             if (image_placeholder[i].getAttribute("src") != "") {
@@ -98,20 +100,29 @@ function resetPlaceholders(){
 }
 
 document.getElementById("nav-encode").onclick = () => {
-    page[0].hidden = false;
-    page[1].hidden = true;
+    encode_page.hidden = false;
+    decode_page.hidden = true;
+    preview_image.classList.add("hide");
 
     encoder.reset();
     resetPlaceholders();
 }
 
 document.getElementById("nav-decode").onclick = () => {
-    page[0].hidden = true;
-    page[1].hidden = false;
+    encode_page.hidden = true;
+    decode_page.hidden = false;
+    preview_image.classList.add("hide");
 
     encoder.reset();
     resetPlaceholders();
 }
+
+document.querySelectorAll(".input-slider").forEach(slider => {
+    const label = slider.nextElementSibling;
+    slider.addEventListener("input", function() {
+        label.textContent = this.value;
+    });
+});
 
 document.getElementById("upload-cover").addEventListener("change", function (e) {
     const file = e.target.files[0];
@@ -168,8 +179,10 @@ document.getElementById("upload-stego").addEventListener("change", function (e) 
 document.getElementById("encode-button").onclick = () => {
     let password_input = document.getElementById("encode-password");
     console.log(password_input.value);
-    
     const image = encoder.encode(password_input.value, 1);
+
+    encode_page.hidden = true;
+    preview_image.classList.remove("hide");
 
     const canvas = document.getElementById("myCanvas");
     canvas.width = image.width;
@@ -185,9 +198,13 @@ document.getElementById("encode-button").onclick = () => {
 document.getElementById("decode-button").onclick = () => {
     let password_input = document.getElementById("decode-password");
     console.log(password_input.value);
+
+    decode_page.hidden = true;
+    preview_image.classList.remove("hide");
+    
     const image = decoder.decode(password_input.value, 1);
 
-    const canvas = document.getElementById("myCanvas");
+    const canvas = document.getElementById("final-image");
     canvas.width = image.width;
     canvas.height = image.height;
 
@@ -196,7 +213,4 @@ document.getElementById("decode-button").onclick = () => {
     const ctx = canvas.getContext("2d");
     ctx.putImageData(imageData, 0, 0);
 }
-
-
-
 

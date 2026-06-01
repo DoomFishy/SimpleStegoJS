@@ -1,4 +1,4 @@
-import { GeneratePositions } from "./generatePositions.js";
+ import { GeneratePositions } from "./generatePositions.js";
 
 export class StegoDecoder {
 
@@ -24,19 +24,34 @@ export class StegoDecoder {
 
         //let image = this.hideHeader(this.cover_data, this.cover_data.width, this.header_positions);
         //image = this.hideHeader(this.cover_data, this.cover_data.height, this.header_positions);
-        let width = this.findHeader(this.stego_data, this.header_positions);
-        let height = this.findHeader(this.stego_data, this.header_positions);
-        let image = this.findData(this.stego_data, 594, 710, this.data_positions);
+        let width = this.findHeader(this.stego_data, this.header_positions, 0);
+        let height = this.findHeader(this.stego_data, this.header_positions, 32);
+
+
+        if (width < 0 || width > this.stego_data.width){
+            width = generator.randomizeSize(this.stego_data.width, password);
+        }
+        
+        if (height < 0 || height > this.stego_data.height){
+            height = generator.randomizeSize(this.stego_data.height, password);
+        }
+
+        console.log(width + " | " + height);
+
+        let image = this.findData(this.stego_data, width, height, this.data_positions);
+    
         return image;
     }
 
-    findHeader(target, header_positions){
+    findHeader(target, header_positions, offset){
+        console.log("-------= " + offset + " =------");
         let size = header_positions.length / 2;
         let dimension = 0;
 
-        for (let i = 0; i < size; i++){
-            let x = header_positions[i].x
-            let y = header_positions[i].y
+        for (let i = 0; i < 32; i++){
+            let index = i + offset;
+            let x = header_positions[index].x
+            let y = header_positions[index].y
 
             let target_pixel = this.getPixel(x, y, target.data, target.width);
     
@@ -46,50 +61,43 @@ export class StegoDecoder {
 
             let shift = (size - 1 - i) * this.lsb_bits * 3;
 
-            dimension = dimension | (r << (shift + this.lsb_bits * 2))
-            dimension = dimension | (g << (shift + this.lsb_bits))
-            dimension = dimension | (b << (shift))
+            dimension = dimension | (r << (shift + this.lsb_bits * 2));
+            dimension = dimension | (g << (shift + this.lsb_bits));
+            dimension = dimension | (b << (shift));
         }
 
         return dimension;
     }
 
-    findData(target, height, width, data_positions){
+    findData(target, width, height, data_positions){
+        let extracted_data = new Uint8ClampedArray(width * height * 4);
         let index = 0;
-        let image_data;
 
-        for (let i = 0; i < target.height; i++){
-            for (let j = 0; j < target.width; j++){
-                
-                if (i < height){
-                    if (j < width){
-                        let x = data_positions[index].x
-                        let y = data_positions[index].y
-                        
-                        let target_pixel = this.getPixel(x, y, target.data, target.width);
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
 
-                        let r = this.findBits(target_pixel.r, this.lsb_bits) * (255 / (Math.pow(2, this.lsb_bits) - 1)); 
-                        let g = this.findBits(target_pixel.g, this.lsb_bits) * (255 / (Math.pow(2, this.lsb_bits) - 1)); 
-                        let b = this.findBits(target_pixel.b, this.lsb_bits) * (255 / (Math.pow(2, this.lsb_bits) - 1)); 
+                let x = data_positions[index].x;
+                let y = data_positions[index].y;
 
-                        let hidden_pixel = {r: r, g: g, b: b};
+                let target_pixel = this.getPixel(x, y, target.data, target.width);
+               
+                let r = this.findBits(target_pixel.r, this.lsb_bits) * (255 / (Math.pow(2, this.lsb_bits) - 1));
+                let g = this.findBits(target_pixel.g, this.lsb_bits) * (255 / (Math.pow(2, this.lsb_bits) - 1));
+                let b = this.findBits(target_pixel.b, this.lsb_bits) * (255 / (Math.pow(2, this.lsb_bits) - 1));
 
-                        target.data = this.setPixel(j, i, this.stego_data.data, hidden_pixel, target.width);
+                let hidden_pixel = { r: r, g: g, b: b };
 
-                        if (index == 1){
-                            console.log(hidden_pixel + " | " + this.lsb_bits + " | " + this.password);
-                        }
+                extracted_data = this.setPixel(j, i, extracted_data, hidden_pixel, width);
 
-                        index++;
-                    }
-                }
-                else {
-                    return target;
-                }
+                index++;
             }
         }
 
-        return target;
+        return {
+            data: extracted_data,
+            width: width,
+            height: height
+        };
     }
 
     findBits(target, lsb){
@@ -114,7 +122,7 @@ export class StegoDecoder {
         target_data[index] = pixel.r;
         target_data[index + 1] = pixel.g;
         target_data[index + 2] = pixel.b;
-
+        target_data[index + 3] = 255;
         return target_data;
     }
 

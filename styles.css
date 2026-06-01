@@ -171,3 +171,14 @@ h1 {
     background-color: rgba(196, 143, 52, 0.808);
     pointer-events: none;
 }
+
+#preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#preview .hide{
+    display: none;
+}
+
