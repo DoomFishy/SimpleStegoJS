@@ -21,7 +21,7 @@ export class GeneratePositions {
 
     randomizeSize(max, password){
         const rng = isaacCSPRNG(password);
-        const size = rng.range(0, max);
+        const size = rng.range(Math.floor(max / 2), max);
 
         return size;
     }

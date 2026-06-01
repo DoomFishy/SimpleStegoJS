@@ -9,7 +9,12 @@
     </head>
     <body>
         <header>
+            <img id="self-logo" src="assets/logo.png">
             DoomFishy
+            <a id="git-logo" href="https://github.com/DoomFishy/SimpleStegoJS">
+                <img src="assets/github.png">
+            </a>
+            
         </header>
         
         <h1>Simple Steganography</h1>
@@ -20,6 +25,7 @@
         </nav>
 
         <main id="inputs">
+            <h2 id="alert"></h2>
             <section id="encode" class="page">
                 <div class="upload-container">
                     <input type="file" id="upload-cover" accept="image/png" hidden>
@@ -46,7 +52,7 @@
                 </div>
 
                 <div id="submit">
-                    <button id="encode-button" class="submit-button empty" disabled>Encode</button>
+                    <button id="encode-button" class="submit-button">Encode</button>
                 </div>
             </section>
 
@@ -68,7 +74,7 @@
                 </div>
 
                 <div id="submit">
-                    <button id="decode-button" class="submit-button empty" disabled>Decode</button>
+                    <button id="decode-button" class="submit-button">Decode</button>
                 </div>
             </section>
 

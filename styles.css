@@ -10,11 +10,18 @@ body {
 }
 
 header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
     color: White;
     font-weight: bold;
     font-size: 3vmin;
-    padding: 2%;
+    padding: 1%;
     background-color: #360185;
+
+    margin-bottom: 5%;
+
 }
 
 footer {
@@ -33,6 +40,24 @@ hr {
     background-color: #360185;
     height: 1.5vh;
     border: 0;
+}
+
+#self-logo {
+    max-width: 6rem;
+    width: 100%;
+    margin-right: 2%;
+    align-items: right;
+}
+
+#git-logo {
+    margin-left: auto;
+    margin-right: 1%;
+
+}
+
+#git-logo img {
+    max-width: 3rem;
+    width: 100%;
 }
 
 #nav {
@@ -55,9 +80,17 @@ hr {
     cursor: pointer;
 }
 
+.nav-button:hover {
+    background-color: #80006a;
+}
+
+.nav-button:active  {
+    background-color: #6b0059;
+}
+
 #inputs {
     width: 50vw;
-    height: 50vh;
+    min-height: 50vh;
     margin: auto;
 }
 
@@ -85,6 +118,14 @@ hr {
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
     background-color: #DE1A58;
     cursor: pointer;
+}
+
+.upload-button:hover {
+    background-color: #c5174e;
+}
+
+.upload-button:active {
+    background-color: #b31446;
 }
 
 .image-scroll {
@@ -155,6 +196,11 @@ hr {
     outline: none;
 }
 
+#alert {
+    font-size: 2vh;
+
+}
+
 #submit {
     text-align: center;
     display: flex;
@@ -172,6 +218,7 @@ hr {
 
     width: 15%;
     height: 5vh;
+    margin-bottom: 2%;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
     background-color: #F4B342;
     cursor: pointer;
@@ -182,6 +229,14 @@ hr {
     color: white;
     background-color: rgba(196, 143, 52, 0.808);
     pointer-events: none;
+}
+
+#submit button:hover {
+    background-color: #e4a73e;
+}
+
+#submit button:active {
+    background-color: #d19a3a;
 }
 
 #preview {

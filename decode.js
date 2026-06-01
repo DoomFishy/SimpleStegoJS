@@ -4,8 +4,6 @@ export class StegoDecoder {
 
     constructor(){
         this.stego_data;
-
-        this.password;
         this.lsb_bits = 1; 
 
         this.header_positions;
@@ -14,7 +12,6 @@ export class StegoDecoder {
 
     decode(password, lsb){
         this.lsb_bits = lsb;
-        this.password = password;
 
         let generator = new GeneratePositions(this.stego_data.width, this.stego_data.height, password);
         this.positions = generator.getScrambledPositions();
@@ -28,15 +25,14 @@ export class StegoDecoder {
         let height = this.findHeader(this.stego_data, this.header_positions, 32);
 
 
-        if (width < 0 || width > this.stego_data.width){
+        if (width <= 0 || width >= this.stego_data.width){
             width = generator.randomizeSize(this.stego_data.width, password);
         }
         
-        if (height < 0 || height > this.stego_data.height){
+        if (height <= 0 || height >= this.stego_data.height){
             height = generator.randomizeSize(this.stego_data.height, password);
         }
 
-        console.log(width + " | " + height);
 
         let image = this.findData(this.stego_data, width, height, this.data_positions);
     
@@ -44,12 +40,11 @@ export class StegoDecoder {
     }
 
     findHeader(target, header_positions, offset){
-        console.log("-------= " + offset + " =------");
-        let size = header_positions.length / 2;
         let dimension = 0;
 
         for (let i = 0; i < 32; i++){
             let index = i + offset;
+
             let x = header_positions[index].x
             let y = header_positions[index].y
 
@@ -59,7 +54,7 @@ export class StegoDecoder {
             let g = this.findBits(target_pixel.g, this.lsb_bits);
             let b = this.findBits(target_pixel.b, this.lsb_bits);
 
-            let shift = (size - 1 - i) * this.lsb_bits * 3;
+            let shift = (32 - 1 - i) * this.lsb_bits * 3;
 
             dimension = dimension | (r << (shift + this.lsb_bits * 2));
             dimension = dimension | (g << (shift + this.lsb_bits));

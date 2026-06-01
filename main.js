@@ -4,6 +4,11 @@ import { StegoEncoder } from "./encode.js";
 const encoder = new StegoEncoder();
 const decoder = new StegoDecoder();
 
+const encode_password = document.getElementById("encode-password");
+const decode_password = document.getElementById("decode-password");
+
+const alert = document.getElementById("alert");
+
 let page = document.getElementsByClassName("page");
 
 let image_placeholder = document.getElementsByClassName("upload-placeholder");
@@ -16,6 +21,47 @@ const decode_page = document.getElementById("decode");
 const preview_image = document.getElementById("final-image");
 
 let lsb = 0;
+
+function checkAllInputsEntered() {
+    let errors = "";
+
+    if (encode_page.hidden == false){
+        
+        if (encode_password.value == "") {
+            errors = " Password is empty! ";
+        }
+        else if (image_placeholder[0].src == "" || image_placeholder[1].src == "") {
+            errors = "One or both of the images was not uploaded! ";
+        }
+
+        if (errors != "") {
+            alert.hidden = false;
+            alert.textContent = errors;
+            return false;            
+        }
+
+    }
+ 
+    else if (decode_page.hidden == false) {
+        if (decode_password.value == "") {
+            errors = " Password is empty! ";
+        }
+        else if (image_placeholder[2].src == "") {
+            errors = "Stego Image was not uploaded! ";
+        }
+
+        if (errors != "") {
+            alert.hidden = false;
+            alert.textContent = errors;
+            return false;            
+        }
+    }
+
+
+    alert.hidden = true;
+
+    return true;
+}
 
 function updateImagePlaceholder(file, img, index) {
     image_placeholder[index].src = URL.createObjectURL(file);
@@ -43,45 +89,26 @@ function processImage(img, encoder, type) {
                 width: canvas.width,
                 height: canvas.height
             });
+            break;
         case "secret":
             encoder.setSecretImage({
                 data: pixels,
                 width: canvas.width,
                 height: canvas.height
             });
+            break;
         case "stego":
             decoder.setStegoImage({
                 data: pixels,
                 width: canvas.width,
                 height: canvas.height
             });
-    }
-}
-
-function enableButton() {
-    if (encode_page.hidden == false) {
-        let counter = 0;
-        for (let i = 0; i < 2; i++) {
-            if (image_placeholder[i].getAttribute("src") != "") {
-                counter++;
-            }
-        }
-
-        if (counter == 2) {
-            submit_button[0].disabled = false;
-            submit_button[0].classList.remove("empty");
-        }
-    }
-
-    else {
-        if (image_placeholder[2].getAttribute("src") != null) {
-            submit_button[1].disabled = false;
-            submit_button[1].classList.remove("empty");
-        }
+            break;
     }
 }
 
 function resetPlaceholders(){
+    alert.textContent = "";
     let encode_password = document.getElementById("encode-password");
     let decode_password = document.getElementById("decode-password");
 
@@ -89,11 +116,6 @@ function resetPlaceholders(){
         image_placeholder[i].src = "";
         image_placeholder[i].classList.remove("show");
         image_scroll[i].classList.remove("show");
-    }
-
-    for (let i = 0; i < submit_button.length; i++) {
-        submit_button[i].disabled = false;
-        submit_button[i].classList.add("empty");    
     }
 
     encode_password.value = "";
@@ -136,7 +158,6 @@ document.getElementById("upload-cover").addEventListener("change", function (e) 
         img.onload = function(){
             processImage(img, encoder, "cover")
             updateImagePlaceholder(file, img, 0);
-            enableButton();            
         }
 
         img.src = URL.createObjectURL(file);
@@ -153,11 +174,9 @@ document.getElementById("upload-secret").addEventListener("change", function (e)
         img.onload = function(){
             processImage(img, encoder, "secret")
             updateImagePlaceholder(file, img, 1);
-            enableButton();            
         }
 
         img.src = URL.createObjectURL(file);
-
 
     };
 });
@@ -171,7 +190,6 @@ document.getElementById("upload-stego").addEventListener("change", function (e) 
         img.onload = function(){
             processImage(img, encoder, "stego")
             updateImagePlaceholder(file, img, 2);
-            enableButton();            
         }
 
         img.src = URL.createObjectURL(file);
@@ -180,8 +198,17 @@ document.getElementById("upload-stego").addEventListener("change", function (e) 
 });
 
 document.getElementById("encode-button").onclick = () => {
+    if (checkAllInputsEntered() == false) {
+        return;
+    }
+
+    if (encoder.getCoverImage().width <= encoder.getSecretImage().width && encoder.getCoverImage().height <= encoder.getSecretImage().height) {
+        alert.textContent = "Secret Image dimensions is bigger than the Cover Image";
+        alert.hidden = false;
+        return;
+    }
+
     let password_input = document.getElementById("encode-password");
-    console.log(password_input.value);
 
     encode_page.hidden = true;
     preview_image.classList.remove("hide");
@@ -200,15 +227,20 @@ document.getElementById("encode-button").onclick = () => {
 
 
 document.getElementById("decode-button").onclick = () => {
+    if (checkAllInputsEntered() == false) {
+        return;
+    }
+
     let password_input = document.getElementById("decode-password");
-    console.log(password_input.value);
 
     decode_page.hidden = true;
     preview_image.classList.remove("hide");
-    
+
     const image = decoder.decode(password_input.value, lsb);
 
     const canvas = document.getElementById("final-image");
+
+
     canvas.width = image.width;
     canvas.height = image.height;
 
@@ -216,5 +248,8 @@ document.getElementById("decode-button").onclick = () => {
 
     const ctx = canvas.getContext("2d");
     ctx.putImageData(imageData, 0, 0);
+
+        
+
 }
 

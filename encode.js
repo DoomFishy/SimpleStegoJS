@@ -14,8 +14,6 @@ export class StegoEncoder {
     }
 
     encode(password, lsb){
-        console.log("Secret Size: " + this.secret_data.width + " | " + this.secret_data.height);
-        console.log("Cover Size: " + this.cover_data.width + " | " + this.cover_data.height);
 
         this.lsb_bits = lsb;
         this.password = password;
@@ -35,16 +33,16 @@ export class StegoEncoder {
     }
 
     hideHeader(target, dimension, header_positions, offset){
-        let size = header_positions.length / 2;
+        let embeded_data = new Uint8ClampedArray(target.width * target.height * 4);
 
-        for (let i = 0; i < size; i++){
+        for (let i = 0; i < 32; i++){
             let index = i + offset;
             let x = header_positions[index].x;
             let y = header_positions[index].y;
 
             let target_pixel = this.getPixel(x, y, target.data, target.width);
 
-            let shift = (size - 1 - i) * this.lsb_bits * 3;
+            let shift = (32 - 1 - i) * this.lsb_bits * 3;
             
             let r = (dimension >> (shift + this.lsb_bits * 2)) & ((1 << this.lsb_bits) - 1);
             let g = (dimension >> (shift + this.lsb_bits)) & ((1 << this.lsb_bits) - 1);
@@ -56,12 +54,14 @@ export class StegoEncoder {
 
             let new_pixel = {r: new_r, g: new_g, b: new_b};
 
-            target.data = this.setPixel(x, y, target.data, new_pixel, target.width);
+            embeded_data = this.setPixel(x, y, embeded_data, new_pixel, target.width);
         }
-        return target;
+        return embeded_data;
     }
 
     hideData(target, source, data_positions){
+        let embeded_data = new Uint8ClampedArray(target.width * target.height * 4);
+
         let index = 0;
 
         for (let i = 0; i < target.height; i++){
@@ -80,18 +80,18 @@ export class StegoEncoder {
                         let b = this.hideBits(target_pixel.b, source_pixel.b, this.lsb_bits);
 
                         let new_pixel = {r: r, g: g, b: b};
-                        target.data = this.setPixel(x, y, target.data, new_pixel, target.width);
+                        embeded_data = this.setPixel(x, y, embeded_data, new_pixel, target.width);
 
                         index++;
                     }
                 }
                 else {
-                    return target;
+                    return embeded_data;
                 }
             }
         }
 
-        return target;
+        return embeded_data;
     }
 
     hideBits(target, source, lsb){
@@ -100,15 +100,11 @@ export class StegoEncoder {
             let bit = (source >> i) & 1;
 
             if (bit == 1){
-                //console.log("Was " + target.toString(2) + " replaced with 1");
                 target = target | (1 << i);
-                //console.log("Now " + target.toString(2));
             }
 
             else{
-                //console.log("Was " + target.toString(2) + " replaced with 0");
                 target = target & ~(1 << i);
-                //console.log("Now " + target.toString(2));
             }
         }
 
@@ -141,6 +137,15 @@ export class StegoEncoder {
 
     setSecretImage(image_data){
         this.secret_data = image_data;
+ 
+    }
+
+    getCoverImage(){
+        return this.cover_data;
+    }
+
+    getSecretImage(){
+        return this.secret_data;
  
     }
 
