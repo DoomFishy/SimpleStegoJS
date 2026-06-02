@@ -20,7 +20,7 @@ const encode_page = document.getElementById("encode");
 const decode_page = document.getElementById("decode");
 const preview_image = document.getElementById("final-image");
 
-let lsb = 0;
+let lsb = 1;
 
 function checkAllInputsEntered() {
     let errors = "";
